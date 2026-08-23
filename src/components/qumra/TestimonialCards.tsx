@@ -33,7 +33,7 @@ function Stars() {
 }
 
 function Avatar({ image, name, className }: { image: string; name: string; className?: string }) {
-  const size = className ? "" : "h-14 w-14";
+  const size = className ? "" : "h-16 w-16 sm:h-20 sm:w-20";
   if (image) {
     return (
       <img
@@ -60,11 +60,11 @@ function TestimonialCard({ name, text, image }: { name: string; text: string; im
   return (
     <figure className="flex h-full flex-col items-center rounded-3xl border border-border bg-surface/50 p-8 text-center sm:p-10">
       <Stars />
-      <blockquote className="mt-6 flex-1 text-lg leading-relaxed text-foreground sm:text-xl">
+      <blockquote className="mt-6 flex-1 text-base leading-relaxed text-foreground sm:text-lg">
         {text ? `"${text}"` : "Watch the video to hear what this student says about Qumra Academy."}
       </blockquote>
-      <figcaption className="mt-7 flex items-center gap-3">
-        <Avatar image={image} name={name} className="h-16 w-16" />
+      <figcaption className="mt-7 flex items-center gap-4">
+        <Avatar image={image} name={name} className="h-20 w-20 sm:h-24 sm:w-24" />
         <div className="text-left">
           <p className="text-base font-semibold text-primary">{name}</p>
           <p className="text-sm text-muted-foreground">Verified Student</p>
@@ -143,7 +143,7 @@ export function TestimonialCards({ items }: { items?: Testimonial[] }) {
                     image={c.image}
                     name={c.name}
                     className={cn(
-                      "h-14 w-14 transition",
+                      "h-16 w-16 transition",
                       active ? "border-primary ring-2 ring-primary/40" : "border-border/60",
                     )}
                   />
