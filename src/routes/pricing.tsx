@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Section } from "@/components/qumra/Section";
-import { useLang, whatsappUrl } from "@/lib/i18n/LanguageProvider";
+import { useLang } from "@/lib/i18n/LanguageProvider";
 import { getCatalogFn } from "@/lib/admin-server";
 import { CTABlock } from "@/components/qumra/CTABlock";
 import { Check } from "lucide-react";
+import { PayPalButton } from "@/components/qumra/PayPalButton";
 
 export const Route = createFileRoute("/pricing")({
   loader: async () => {
@@ -26,6 +27,11 @@ export const Route = createFileRoute("/pricing")({
   component: Pricing,
 });
 
+function extractAmount(price: string): string {
+  const num = price.replace(/[^0-9.]/g, "");
+  return num || "0";
+}
+
 function Pricing() {
   const { t, lang } = useLang();
   const catalog = Route.useLoaderData();
@@ -46,7 +52,6 @@ function Pricing() {
         }))
       : fallbackPlans;
 
-  const msg = lang === "ar" ? "أرغب في الاشتراك في باقة" : "I'd like to subscribe to a plan";
   return (
     <>
       <Section eyebrow="Pricing" title={t.pricing.title} subtitle={t.pricing.subtitle} center>
@@ -78,18 +83,9 @@ function Pricing() {
                   </li>
                 ))}
               </ul>
-              <a
-                href={whatsappUrl(`${msg}: ${p.name}`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`mt-8 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition ${
-                  p.popular
-                    ? "bg-primary text-primary-foreground hover:brightness-110"
-                    : "border border-primary text-primary hover:bg-primary/10"
-                }`}
-              >
-                {t.pricing.cta}
-              </a>
+              <div className="mt-8">
+                <PayPalButton amount={extractAmount(p.price)} planName={p.name} className="w-full" />
+              </div>
             </div>
           ))}
         </div>
