@@ -7,7 +7,7 @@ declare global {
     paypal?: {
       Buttons: (opts: Record<string, unknown>) => { render: (el: HTMLElement) => void };
     };
-  }
+  };
 }
 
 interface PayPalButtonProps {
@@ -19,8 +19,8 @@ interface PayPalButtonProps {
 
 export function PayPalButton({ amount, planName, onSuccess, className }: PayPalButtonProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [errorMsg, setErrorMsg] = useState("");
   const renderedRef = useRef(false);
 
   useEffect(() => {
@@ -29,7 +29,14 @@ export function PayPalButton({ amount, planName, onSuccess, className }: PayPalB
     async function init() {
       try {
         const { clientId } = await getPaypalClientId();
-        if (!clientId || cancelled) return;
+        if (cancelled) return;
+
+        if (!clientId) {
+          console.error("[PayPal] No client ID returned from server");
+          setErrorMsg("PAYPAL_CLIENT_ID is not configured on the server.");
+          setStatus("error");
+          return;
+        }
 
         if (!document.querySelector(`script[src*="paypal"]`)) {
           await new Promise<void>((resolve, reject) => {
@@ -37,12 +44,20 @@ export function PayPalButton({ amount, planName, onSuccess, className }: PayPalB
             s.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
             s.async = true;
             s.onload = () => resolve();
-            s.onerror = () => reject(new Error("Failed to load PayPal SDK"));
+            s.onerror = () => reject(new Error("Failed to load PayPal SDK script"));
             document.head.appendChild(s);
           });
         }
 
-        if (cancelled || !window.paypal || renderedRef.current || !containerRef.current) return;
+        if (cancelled) return;
+
+        if (!window.paypal) {
+          setErrorMsg("PayPal SDK loaded but window.paypal is undefined.");
+          setStatus("error");
+          return;
+        }
+
+        if (renderedRef.current || !containerRef.current) return;
         renderedRef.current = true;
 
         window.paypal.Buttons({
@@ -66,12 +81,13 @@ export function PayPalButton({ amount, planName, onSuccess, className }: PayPalB
           },
         }).render(containerRef.current);
 
-        setLoading(false);
+        setStatus("ready");
       } catch (err) {
         if (!cancelled) {
-          console.error("PayPal init error:", err);
-          setError(true);
-          setLoading(false);
+          const msg = err instanceof Error ? err.message : String(err);
+          console.error("[PayPal] Init error:", msg);
+          setErrorMsg(msg);
+          setStatus("error");
         }
       }
     }
@@ -80,13 +96,17 @@ export function PayPalButton({ amount, planName, onSuccess, className }: PayPalB
     return () => { cancelled = true; };
   }, [amount, planName, onSuccess]);
 
-  if (error) return null;
-
   return (
     <div className={className}>
-      {loading && (
+      {status === "loading" && (
         <div className="flex h-12 items-center justify-center text-xs text-muted-foreground">
           Loading PayPal...
+        </div>
+      )}
+      {status === "error" && (
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-xs text-destructive">
+          <p className="font-semibold">PayPal unavailable</p>
+          <p className="mt-1 break-all opacity-80">{errorMsg}</p>
         </div>
       )}
       <div ref={containerRef} />
