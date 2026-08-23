@@ -121,20 +121,24 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
 
   async function submit(e: FormEvent) {
     e.preventDefault();
     setBusy(true);
+    setErrMsg("");
     try {
       const ok = await loginFn({ data: { email, password } });
       if (ok) {
         toast.success("Welcome back");
         onSuccess();
       } else {
-        toast.error("Wrong email or password");
+        setErrMsg("Wrong email or password");
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Login failed");
+      const msg = err instanceof Error ? err.message : "Login failed";
+      console.error("[Admin Login]", msg);
+      setErrMsg(msg);
     } finally {
       setBusy(false);
     }
@@ -151,6 +155,11 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
         </div>
         <h1 className="text-center text-xl font-bold">Admin Login</h1>
         <p className="mt-1 text-center text-sm text-muted-foreground">Qumra Academy Dashboard</p>
+        {errMsg && (
+          <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-center text-sm text-destructive">
+            {errMsg}
+          </div>
+        )}
         <div className="mt-6 space-y-3">
           <div className="space-y-1.5">
             <Label htmlFor="em">Email</Label>
@@ -180,6 +189,7 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
           {busy ? "Checking…" : "Login"}
         </Button>
       </form>
+      <Toaster position="top-center" />
     </div>
   );
 }
