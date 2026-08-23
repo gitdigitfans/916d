@@ -74,7 +74,7 @@ export interface Stats {
 }
 
 const ADMIN_COOKIE = "qumra_admin";
-const ADMIN_COOKIE_OPTS = { httpOnly: true, sameSite: "strict" as const, secure: true, path: "/" };
+const ADMIN_COOKIE_OPTS = { httpOnly: true, sameSite: "lax" as const, secure: false, path: "/" };
 
 const encoder = new TextEncoder();
 function bufToHex(buf: Uint8Array) {
