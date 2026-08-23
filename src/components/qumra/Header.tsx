@@ -14,6 +14,7 @@ export function Header() {
     { to: "/programs", label: t.nav.programs },
     { to: "/teachers", label: t.nav.teachers },
     { to: "/pricing", label: t.nav.pricing },
+    { to: "/blog", label: t.nav.blog },
     { to: "/enroll", label: t.nav.enroll },
     { to: "/contact", label: t.nav.contact },
   ] as const;

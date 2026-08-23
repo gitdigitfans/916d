@@ -52,6 +52,7 @@ type Dict = {
     newsletter: string; newsletterDesc: string; subscribe: string; rights: string;
   };
   cta: { title: string; subtitle: string };
+  blog: { title: string; subtitle: string; readMore: string; backToList: string; noPosts: string; author: string };
 };
 
 export const translations: Record<Lang, Dict> = {
@@ -70,6 +71,7 @@ export const translations: Record<Lang, Dict> = {
       courses: "Courses",
       enroll: "Enroll",
       bookTrial: "Book Free Trial",
+      blog: "Blog",
     },
     hero: {
       eyebrow: "Qumra Academy · Read · Understand · Ascend",
@@ -305,6 +307,14 @@ export const translations: Record<Lang, Dict> = {
       title: "Start your Qumra journey today",
       subtitle: "Book a free trial lesson and meet your teacher.",
     },
+    blog: {
+      title: "Blog",
+      subtitle: "Insights, tips and updates from Qumra Academy.",
+      readMore: "Read more",
+      backToList: "Back to blog",
+      noPosts: "No blog posts yet.",
+      author: "By",
+    },
   },
   ar: {
     nav: {
@@ -320,6 +330,7 @@ export const translations: Record<Lang, Dict> = {
       courses: "الكورسات",
       enroll: "سجّل الآن",
       bookTrial: "احجز حصة مجانية",
+      blog: "المدونة",
     },
     hero: {
       eyebrow: "أكاديمية قمرة · اقرأ · افهم · ارتقِ",
@@ -554,6 +565,14 @@ export const translations: Record<Lang, Dict> = {
     cta: {
       title: "ابدأ رحلتك مع قمرة اليوم",
       subtitle: "احجز حصة تجريبية مجانية وتعرّف على معلمك.",
+    },
+    blog: {
+      title: "المدونة",
+      subtitle: "مقالات ونصائح وتحديثات من أكاديمية قمرة.",
+      readMore: "اقرأ المزيد",
+      backToList: "العودة للمدونة",
+      noPosts: "لا توجد مقالات بعد.",
+      author: "بقلم",
     },
   },
 };

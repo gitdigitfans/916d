@@ -40,6 +40,23 @@ export interface Booking {
   created_at: string;
 }
 
+export interface BlogPost {
+  id: string;
+  title_en: string;
+  title_ar: string;
+  slug: string | null;
+  excerpt_en: string;
+  excerpt_ar: string;
+  body_en: string;
+  body_ar: string;
+  image_url: string;
+  author: string;
+  visible: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Stats {
   students: {
     total: number;
@@ -840,6 +857,107 @@ export const deleteTeacherFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     requireAdmin();
     const { error } = await supabase().from("teachers").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return true;
+  });
+
+/* ------------------------- Blog Posts (CMS) ------------------------- */
+
+const blogPostInput = z.object({
+  id: z.string().uuid().optional(),
+  title_en: z.string().max(300).optional().or(z.literal("")).default(""),
+  title_ar: z.string().max(300).optional().or(z.literal("")).default(""),
+  slug: z.string().max(300).optional().or(z.literal("")).default(""),
+  excerpt_en: z.string().max(1000).optional().or(z.literal("")).default(""),
+  excerpt_ar: z.string().max(1000).optional().or(z.literal("")).default(""),
+  body_en: z.string().max(50000).optional().or(z.literal("")).default(""),
+  body_ar: z.string().max(50000).optional().or(z.literal("")).default(""),
+  image_url: z.string().max(1000).optional().or(z.literal("")).default(""),
+  author: z.string().max(200).optional().or(z.literal("")).default(""),
+  visible: z.boolean().optional().default(true),
+  sort_order: z.coerce.number().int().min(-1000).max(1000).default(0),
+});
+
+function cleanBlogPost(d: z.infer<typeof blogPostInput>) {
+  return {
+    title_en: d.title_en,
+    title_ar: d.title_ar,
+    slug: d.slug || null,
+    excerpt_en: d.excerpt_en,
+    excerpt_ar: d.excerpt_ar,
+    body_en: d.body_en,
+    body_ar: d.body_ar,
+    image_url: d.image_url,
+    author: d.author,
+    visible: d.visible,
+    sort_order: d.sort_order,
+  };
+}
+
+function makeSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 120);
+}
+
+/** Public: visible blog posts. */
+export const getBlogPostsFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { data, error } = await supabase()
+    .from("blog_posts")
+    .select("*")
+    .eq("visible", true)
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as BlogPost[];
+});
+
+/** Admin: full blog list including hidden ones. */
+export const listBlogPostsFn = createServerFn({ method: "GET" }).handler(async () => {
+  requireAdmin();
+  const { data, error } = await supabase()
+    .from("blog_posts")
+    .select("*")
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as BlogPost[];
+});
+
+/** Admin: create or update a blog post. */
+export const upsertBlogPostFn = createServerFn({ method: "POST" })
+  .validator(blogPostInput)
+  .handler(async ({ data }) => {
+    requireAdmin();
+    const clean = cleanBlogPost(data);
+    if (!clean.slug) {
+      clean.slug = makeSlug(clean.title_en || clean.title_ar || Date.now().toString());
+    }
+    if (data.id) {
+      const { data: updated, error } = await supabase()
+        .from("blog_posts")
+        .update({ ...clean, updated_at: new Date().toISOString() })
+        .eq("id", data.id)
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return updated as BlogPost;
+    }
+    const { data: created, error } = await supabase()
+      .from("blog_posts")
+      .insert(clean)
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
+    return created as BlogPost;
+  });
+
+/** Admin: delete a blog post. */
+export const deleteBlogPostFn = createServerFn({ method: "POST" })
+  .validator(z.object({ id: z.string().uuid() }))
+  .handler(async ({ data }) => {
+    requireAdmin();
+    const { error } = await supabase().from("blog_posts").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return true;
   });

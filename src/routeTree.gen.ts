@@ -17,10 +17,12 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EnrollRouteImport } from './routes/enroll'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
 import { Route as AdminTeachersRouteImport } from './routes/admin/teachers'
 import { Route as AdminStudentsRouteImport } from './routes/admin/students'
@@ -32,6 +34,7 @@ import { Route as AdminFaqsRouteImport } from './routes/admin/faqs'
 import { Route as AdminContactRouteImport } from './routes/admin/contact'
 import { Route as AdminCatalogRouteImport } from './routes/admin/catalog'
 import { Route as AdminBookingsRouteImport } from './routes/admin/bookings'
+import { Route as AdminBlogRouteImport } from './routes/admin/blog'
 
 const TeachersRoute = TeachersRouteImport.update({
   id: '/teachers',
@@ -73,6 +76,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -92,6 +100,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
 } as any)
 const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   id: '/testimonials',
@@ -148,11 +161,17 @@ const AdminBookingsRoute = AdminBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBlogRoute = AdminBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/enroll': typeof EnrollRoute
@@ -161,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/programs': typeof ProgramsRoute
   '/teachers': typeof TeachersRoute
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/catalog': typeof AdminCatalogRoute
   '/admin/contact': typeof AdminContactRoute
@@ -172,11 +192,13 @@ export interface FileRoutesByFullPath {
   '/admin/students': typeof AdminStudentsRoute
   '/admin/teachers': typeof AdminTeachersRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/enroll': typeof EnrollRoute
@@ -185,6 +207,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/programs': typeof ProgramsRoute
   '/teachers': typeof TeachersRoute
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/catalog': typeof AdminCatalogRoute
   '/admin/contact': typeof AdminContactRoute
@@ -196,6 +219,7 @@ export interface FileRoutesByTo {
   '/admin/students': typeof AdminStudentsRoute
   '/admin/teachers': typeof AdminTeachersRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -203,6 +227,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/enroll': typeof EnrollRoute
@@ -211,6 +236,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/programs': typeof ProgramsRoute
   '/teachers': typeof TeachersRoute
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/catalog': typeof AdminCatalogRoute
   '/admin/contact': typeof AdminContactRoute
@@ -222,6 +248,7 @@ export interface FileRoutesById {
   '/admin/students': typeof AdminStudentsRoute
   '/admin/teachers': typeof AdminTeachersRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -230,6 +257,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/blog'
     | '/contact'
     | '/courses'
     | '/enroll'
@@ -238,6 +266,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/programs'
     | '/teachers'
+    | '/admin/blog'
     | '/admin/bookings'
     | '/admin/catalog'
     | '/admin/contact'
@@ -249,11 +278,13 @@ export interface FileRouteTypes {
     | '/admin/students'
     | '/admin/teachers'
     | '/admin/testimonials'
+    | '/blog/$slug'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/blog'
     | '/contact'
     | '/courses'
     | '/enroll'
@@ -262,6 +293,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/programs'
     | '/teachers'
+    | '/admin/blog'
     | '/admin/bookings'
     | '/admin/catalog'
     | '/admin/contact'
@@ -273,12 +305,14 @@ export interface FileRouteTypes {
     | '/admin/students'
     | '/admin/teachers'
     | '/admin/testimonials'
+    | '/blog/$slug'
     | '/admin'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/admin'
+    | '/blog'
     | '/contact'
     | '/courses'
     | '/enroll'
@@ -287,6 +321,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/programs'
     | '/teachers'
+    | '/admin/blog'
     | '/admin/bookings'
     | '/admin/catalog'
     | '/admin/contact'
@@ -298,6 +333,7 @@ export interface FileRouteTypes {
     | '/admin/students'
     | '/admin/teachers'
     | '/admin/testimonials'
+    | '/blog/$slug'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -305,6 +341,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRoute
   EnrollRoute: typeof EnrollRoute
@@ -373,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -400,6 +444,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/admin/testimonials': {
       id: '/admin/testimonials'
@@ -478,10 +529,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBookingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/blog': {
+      id: '/admin/blog'
+      path: '/blog'
+      fullPath: '/admin/blog'
+      preLoaderRoute: typeof AdminBlogRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminBlogRoute: typeof AdminBlogRoute
   AdminBookingsRoute: typeof AdminBookingsRoute
   AdminCatalogRoute: typeof AdminCatalogRoute
   AdminContactRoute: typeof AdminContactRoute
@@ -497,6 +556,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBlogRoute: AdminBlogRoute,
   AdminBookingsRoute: AdminBookingsRoute,
   AdminCatalogRoute: AdminCatalogRoute,
   AdminContactRoute: AdminContactRoute,
@@ -513,10 +573,21 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRoute,
   EnrollRoute: EnrollRoute,
