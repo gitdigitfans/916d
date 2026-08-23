@@ -607,7 +607,7 @@ export const getSiteSettingsFn = createServerFn({ method: "GET" }).handler(async
 
 /** Admin: update hero image URL. */
 export const updateHeroImageFn = createServerFn({ method: "POST" })
-  .validator(z.object({ image_url: z.string().min(1).max(1000) }))
+  .validator(z.object({ image_url: z.string().max(1000).default("") }))
   .handler(async ({ data }) => {
     requireAdmin();
     const { error } = await supabase()
