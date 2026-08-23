@@ -64,7 +64,7 @@ function TestimonialCard({ name, text, image }: { name: string; text: string; im
         {text ? `"${text}"` : "Watch the video to hear what this student says about Qumra Academy."}
       </blockquote>
       <figcaption className="mt-7 flex items-center gap-4">
-        <Avatar image={image} name={name} className="h-20 w-20 sm:h-24 sm:w-24" />
+        <Avatar image={image} name={name} className="h-24 w-24 sm:h-28 sm:w-28" />
         <div className="text-left">
           <p className="text-base font-semibold text-primary">{name}</p>
           <p className="text-sm text-muted-foreground">Verified Student</p>
