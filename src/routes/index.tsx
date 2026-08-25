@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Hero } from "@/components/qumra/Hero";
 import { Section } from "@/components/qumra/Section";
 import { ProgramCards } from "@/components/qumra/ProgramCards";
@@ -25,6 +26,9 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { t } = useLang();
   const content = Route.useLoaderData();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <>
       <Hero heroImage={content?.hero_image} />
