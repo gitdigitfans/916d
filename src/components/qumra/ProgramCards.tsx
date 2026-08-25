@@ -26,7 +26,7 @@ export function ProgramCards({ programs }: { programs?: SiteProgram[] }) {
       {cards.map((c) => (
         <Link
           key={c.name}
-          to="/programs"
+          to="/courses"
           className="group relative overflow-hidden rounded-2xl border border-border bg-surface/50 transition hover:border-primary/60 hover:-translate-y-1"
         >
           <div className="aspect-square overflow-hidden">

@@ -34,7 +34,7 @@ export function Hero({ heroImage }: { heroImage?: string }) {
               <ArrowRight className="h-4 w-4 rtl:rotate-180" />
             </a>
             <Link
-              to="/programs"
+              to="/courses"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/50 px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur transition hover:border-primary hover:text-primary"
             >
               <BookOpen className="h-4 w-4" />

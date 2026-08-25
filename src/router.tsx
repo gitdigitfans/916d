@@ -9,6 +9,9 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
+    scrollRestorationBehavior: "instant",
+    getScrollRestorationKey: (location) =>
+      location.pathname === "/" ? "home-always-top" : location.pathname,
     defaultPreloadStaleTime: 0,
   });
 

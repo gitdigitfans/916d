@@ -29,7 +29,7 @@ function Home() {
     <>
       <Hero heroImage={content?.hero_image} />
 
-      <Section eyebrow="Programs" title={t.programs.title} subtitle={t.programs.subtitle} center>
+      <Section eyebrow="Courses" title={t.courses.title} subtitle={t.programs.subtitle} center>
         <ProgramCards programs={content?.programs} />
       </Section>
 
@@ -55,6 +55,10 @@ function Home() {
         </div>
       </Section>
 
+      <Section eyebrow="Testimonials" title={t.testimonials.title} center>
+        <TestimonialCards items={content?.testimonials} />
+      </Section>
+
       <Section eyebrow="Instructors" title={t.teachers.title} subtitle={t.teachers.subtitle} center>
         <TeacherCards items={content?.teachers} />
       </Section>
@@ -71,10 +75,6 @@ function Home() {
             </div>
           ))}
         </div>
-      </Section>
-
-      <Section eyebrow="Testimonials" title={t.testimonials.title} center>
-        <TestimonialCards items={content?.testimonials} />
       </Section>
 
       <CTABlock />

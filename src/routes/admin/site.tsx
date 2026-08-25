@@ -131,7 +131,7 @@ function SitePage() {
             value={video ?? ""}
             onChange={setVideo}
             label="Intro video"
-            hint="Shown at the top of the /programs page. Upload an mp4/webm or paste a YouTube link. Leave empty to keep the default intro video."
+            hint="Shown at the top of the /courses page. Upload an mp4/webm or paste a YouTube link. Leave empty to keep the default intro video."
           />
         </CardContent>
       </Card>

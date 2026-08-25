@@ -85,7 +85,7 @@ export function Footer() {
               t.programs.kids.name,
             ].map((p) => (
               <li key={p}>
-                <Link to="/programs" className="text-foreground/75 transition hover:text-primary">
+                <Link to="/courses" className="text-foreground/75 transition hover:text-primary">
                   {p}
                 </Link>
               </li>

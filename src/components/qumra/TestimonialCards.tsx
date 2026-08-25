@@ -58,18 +58,22 @@ function Avatar({ image, name, className }: { image: string; name: string; class
 
 function TestimonialCard({ name, text, image }: { name: string; text: string; image: string }) {
   return (
-    <figure className="flex h-full flex-col items-center rounded-3xl border border-border bg-surface/50 p-8 text-center sm:p-10">
-      <Stars />
-      <blockquote className="mt-6 flex-1 text-base leading-relaxed text-foreground sm:text-lg">
-        {text ? `"${text}"` : "Watch the video to hear what this student says about Qumra Academy."}
-      </blockquote>
-      <figcaption className="mt-7 flex items-center gap-4">
-        <Avatar image={image} name={name} className="h-24 w-24 sm:h-28 sm:w-28" />
-        <div className="text-left">
+    <figure className="flex h-full flex-col items-center gap-6 rounded-3xl border border-border bg-surface/50 p-8 text-center sm:flex-row sm:items-center sm:gap-8 sm:p-10 sm:text-left">
+      <Avatar
+        image={image}
+        name={name}
+        className="h-32 w-32 shrink-0 sm:h-40 sm:w-40"
+      />
+      <div className="flex flex-1 flex-col items-center sm:items-start">
+        <Stars />
+        <blockquote className="mt-4 text-base leading-relaxed text-foreground sm:text-lg">
+          {text ? `"${text}"` : "Watch the video to hear what this student says about Qumra Academy."}
+        </blockquote>
+        <figcaption className="mt-5">
           <p className="text-base font-semibold text-primary">{name}</p>
           <p className="text-sm text-muted-foreground">Verified Student</p>
-        </div>
-      </figcaption>
+        </figcaption>
+      </div>
     </figure>
   );
 }

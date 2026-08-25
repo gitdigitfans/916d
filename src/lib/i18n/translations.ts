@@ -92,7 +92,7 @@ export const translations: Record<Lang, Dict> = {
     programs: {
       title: "Our Programs",
       subtitle: "Structured tracks for every learner — from first letters to Ijazah.",
-      viewAll: "View All Programs",
+      viewAll: "View All Courses",
       quran: {
         name: "Quran Learning",
         desc: "Master Quran recitation with proper Tajweed while building confidence in reading, memorization, and understanding.",
@@ -297,7 +297,7 @@ export const translations: Record<Lang, Dict> = {
       about:
         "Qumra Academy — a global online platform for Quran, Arabic, and Islamic Studies. Read · Understand · Ascend.",
       quickLinks: "Quick Links",
-      programsT: "Programs",
+      programsT: "Courses",
       newsletter: "Newsletter",
       newsletterDesc: "Subscribe to receive academy news, educational resources, and special offers.",
       subscribe: "Subscribe",
@@ -351,7 +351,7 @@ export const translations: Record<Lang, Dict> = {
     programs: {
       title: "برامجنا",
       subtitle: "مسارات منظّمة لكل مستوى — من أول الحروف حتى الإجازة.",
-      viewAll: "استعرض كل البرامج",
+      viewAll: "استعرض كل الكورسات",
       quran: {
         name: "تعلّم القرآن",
         desc: "أتقن تلاوة القرآن بأحكام التجويد مع بناء الثقة في القراءة والحفظ والفهم.",
@@ -556,7 +556,7 @@ export const translations: Record<Lang, Dict> = {
       about:
         "أكاديمية قمرة — منصّة عالمية أونلاين لتعليم القرآن واللغة العربية والدراسات الإسلامية. اقرأ · افهم · ارتقِ.",
       quickLinks: "روابط سريعة",
-      programsT: "البرامج",
+      programsT: "الكورسات",
       newsletter: "النشرة البريدية",
       newsletterDesc: "اشترك لتصلك أخبار الأكاديمية والموارد التعليمية والعروض الخاصة.",
       subscribe: "اشترك",

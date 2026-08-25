@@ -11,7 +11,7 @@ export function Header() {
   const links = [
     { to: "/", label: t.nav.home },
     { to: "/about", label: t.nav.about },
-    { to: "/programs", label: t.nav.programs },
+    { to: "/courses", label: t.nav.courses },
     { to: "/teachers", label: t.nav.teachers },
     { to: "/pricing", label: t.nav.pricing },
     { to: "/blog", label: t.nav.blog },
