@@ -28,6 +28,13 @@ function Home() {
   const content = Route.useLoaderData();
   useEffect(() => {
     window.scrollTo(0, 0);
+    const t1 = setTimeout(() => window.scrollTo(0, 0), 0);
+    const t2 = setTimeout(() => window.scrollTo(0, 0), 150);
+    window.addEventListener("load", () => window.scrollTo(0, 0));
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, []);
   return (
     <>
