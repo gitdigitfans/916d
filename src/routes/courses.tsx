@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useLocation } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Section } from "@/components/qumra/Section";
 import { CourseCards } from "@/components/qumra/CourseCards";
 import { useLang } from "@/lib/i18n/LanguageProvider";
@@ -38,27 +39,38 @@ function Courses() {
   const data = Route.useLoaderData();
   const catalog = data?.catalog ?? null;
   const videoUrl = data?.video || introVideo.url;
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+    const el = document.getElementById(hash);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [hash]);
 
   const programs = [
     {
+      id: "quran",
       img: img2.url,
       name: t.programs.quran.name,
       desc: t.programs.quran.desc,
       items: ["Noor Al-Bayan", "Qaida Noorania", "Quran Reading", "Tajweed Rules", "Hifz", "Revision", "Ijazah", "Understanding"],
     },
     {
+      id: "islamic",
       img: img4.url,
       name: t.programs.islamic.name,
       desc: t.programs.islamic.desc,
       items: ["Aqeedah", "Fiqh", "Seerah", "Hadith", "Tafsir", "Islamic Manners", "Daily Duas", "Islamic History"],
     },
     {
+      id: "arabic",
       img: img3.url,
       name: t.programs.arabic.name,
       desc: t.programs.arabic.desc,
       items: ["Alphabet", "Reading", "Writing", "Speaking", "Listening", "Grammar", "Vocabulary", "Conversation"],
     },
     {
+      id: "kids",
       img: imgF.url,
       name: t.programs.kids.name,
       desc: t.programs.kids.desc,
@@ -73,7 +85,8 @@ function Courses() {
           {programs.map((p, i) => (
             <div
               key={p.name}
-              className={`grid gap-8 overflow-hidden rounded-3xl border border-border bg-surface/50 p-6 lg:grid-cols-2 lg:p-10 ${
+              id={p.id}
+              className={`grid scroll-mt-24 gap-8 overflow-hidden rounded-3xl border border-border bg-surface/50 p-6 lg:grid-cols-2 lg:p-10 ${
                 i % 2 ? "lg:[&>div:first-child]:order-2" : ""
               }`}
             >

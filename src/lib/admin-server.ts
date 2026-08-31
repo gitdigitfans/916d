@@ -37,6 +37,13 @@ export interface Booking {
   program: string | null;
   message: string | null;
   status: string;
+  parent_name: string | null;
+  child_name: string | null;
+  child_age: string | null;
+  current_level: string | null;
+  tutor_gender: string | null;
+  country: string | null;
+  class_time: string | null;
   created_at: string;
 }
 
@@ -133,6 +140,13 @@ const bookingInput = z.object({
   phone: z.string().max(50).optional().or(z.literal("")).default(""),
   program: z.string().max(100).optional().or(z.literal("")).default(""),
   message: z.string().max(2000).optional().or(z.literal("")).default(""),
+  parent_name: z.string().max(200).optional().or(z.literal("")).default(""),
+  child_name: z.string().max(200).optional().or(z.literal("")).default(""),
+  child_age: z.string().max(50).optional().or(z.literal("")).default(""),
+  current_level: z.string().max(100).optional().or(z.literal("")).default(""),
+  tutor_gender: z.string().max(50).optional().or(z.literal("")).default(""),
+  country: z.string().max(100).optional().or(z.literal("")).default(""),
+  class_time: z.string().max(50).optional().or(z.literal("")).default(""),
 });
 
 function cleanStudent(d: z.infer<typeof studentInput>) {
@@ -423,6 +437,13 @@ export const createBookingFn = createServerFn({ method: "POST" })
         program: data.program || null,
         message: data.message || null,
         status: "new",
+        parent_name: data.parent_name || null,
+        child_name: data.child_name || null,
+        child_age: data.child_age || null,
+        current_level: data.current_level || null,
+        tutor_gender: data.tutor_gender || null,
+        country: data.country || null,
+        class_time: data.class_time || null,
       });
     if (error) throw new Error(error.message);
     return true;

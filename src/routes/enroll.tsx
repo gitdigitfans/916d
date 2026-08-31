@@ -7,64 +7,117 @@ import { useLang, whatsappUrl } from "@/lib/i18n/LanguageProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CheckCircle2, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/enroll")({
   head: () => ({
     meta: [
       { title: "Enroll — Qumra Academy" },
-      { name: "description", content: "Book a free trial or enroll in Qumra Academy programs." },
+      { name: "description", content: "Book your child's free Quran trial class at Qumra Academy." },
     ],
   }),
   component: EnrollPage,
 });
 
-const PROGRAMS = ["Quran", "Tajweed", "Islamic Studies", "Arabic Language", "Kids Program"];
+const CHILD_AGES = ["3-5", "6-8", "9-11", "12-14", "15-17", "18+"];
+const LEVELS = ["Beginner", "Intermediate", "Advanced"];
+const COUNTRIES = [
+  "United States",
+  "United Kingdom",
+  "Canada",
+  "Australia",
+  "Egypt",
+  "Saudi Arabia",
+  "UAE",
+  "Other",
+];
+const CLASS_TIMES = ["Morning", "Afternoon", "Evening", "Flexible"];
 
 function EnrollPage() {
   const { lang } = useLang();
   const t = {
     en: {
       badge: "Free Trial",
-      title: "Book your free trial",
+      title: "Book Your Child's FREE Quran Trial Class",
       subtitle: "Fill the form and our team will contact you to schedule your first lesson.",
-      name: "Full name",
-      namePh: "Your name",
-      email: "Email",
-      phone: "WhatsApp number",
-      program: "Program",
-      programPh: "Select a program",
-      message: "Message (optional)",
-      messagePh: "Tell us about the student, age, and goals…",
-      submit: "Send request",
+      parentName: "Parent Name",
+      parentNamePh: "e.g. Sarah Ahamad",
+      childName: "Child Name",
+      childNamePh: "e.g. Sarah Ahamad",
+      childAge: "Child's Age",
+      childAgePh: "Select Child's Age",
+      currentLevel: "Current Level",
+      currentLevelPh: "Select level",
+      tutorGender: "Preferred Tutor Gender",
+      tutorGenderPh: "No preference",
+      country: "Your Country",
+      countryPh: "Select Country Name",
+      email: "Email Address",
+      emailPh: "you@email.com",
+      phone: "Whatsapp Number",
+      phonePh: "+1 000 000 0000",
+      classTime: "Preferred Class Time",
+      submit: "Start Free Trial",
       sending: "Sending…",
       successTitle: "Request sent!",
       successDesc: "We'll contact you shortly. You can also message us directly on WhatsApp.",
       whatsapp: "Message us on WhatsApp",
       back: "Back to home",
+      noPreference: "No preference",
+      male: "Male",
+      female: "Female",
     },
     ar: {
       badge: "حصة تجريبية مجانية",
-      title: "احجز حصتك التجريبية المجانية",
+      title: "احجزي حصة تجريبية مجانية لطفلك في القرآن",
       subtitle: "املأ النموذج وسيتواصل معك فريقنا لتحديد موعد أول حصة.",
-      name: "الاسم الكامل",
-      namePh: "اسمك",
+      parentName: "اسم ولي الأمر",
+      parentNamePh: "مثال: سارة أحمد",
+      childName: "اسم الطفل",
+      childNamePh: "مثال: سارة أحمد",
+      childAge: "عمر الطفل",
+      childAgePh: "اختر عمر الطفل",
+      currentLevel: "المستوى الحالي",
+      currentLevelPh: "اختر المستوى",
+      tutorGender: "جنس المعلم المفضل",
+      tutorGenderPh: "لا تفضيل",
+      country: "دولتك",
+      countryPh: "اختر اسم الدولة",
       email: "البريد الإلكتروني",
+      emailPh: "you@email.com",
       phone: "رقم الواتساب",
-      program: "البرنامج",
-      programPh: "اختر البرنامج",
-      message: "رسالة (اختياري)",
-      messagePh: "أخبرنا عن الطالب وعمره وأهدافه…",
-      submit: "إرسال الطلب",
+      phonePh: "+1 000 000 0000",
+      classTime: "الوقت المفضل للحصة",
+      submit: "ابدأ الحصة التجريبية",
       sending: "جارٍ الإرسال…",
       successTitle: "تم إرسال طلبك!",
       successDesc: "سنتواصل معك قريبًا. يمكنك أيضًا مراسلتنا مباشرة على الواتساب.",
       whatsapp: "راسلنا على واتساب",
       back: "العودة للرئيسية",
+      noPreference: "لا تفضيل",
+      male: "ذكر",
+      female: "أنثى",
     },
   }[lang];
 
-  const [form, setForm] = useState({ name: "", email: "", phone: "", program: "", message: "" });
+  const [form, setForm] = useState({
+    parent_name: "",
+    child_name: "",
+    child_age: "",
+    current_level: "",
+    tutor_gender: "",
+    country: "",
+    email: "",
+    phone: "",
+    class_time: "",
+  });
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -74,13 +127,32 @@ function EnrollPage() {
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!form.name.trim()) {
-      toast.error(lang === "ar" ? "الاسم مطلوب" : "Name is required");
+    if (!form.parent_name.trim()) {
+      toast.error(lang === "ar" ? "اسم ولي الأمر مطلوب" : "Parent name is required");
+      return;
+    }
+    if (!form.child_name.trim()) {
+      toast.error(lang === "ar" ? "اسم الطفل مطلوب" : "Child name is required");
       return;
     }
     setBusy(true);
     try {
-      await createBookingFn({ data: form });
+      await createBookingFn({
+        data: {
+          name: form.parent_name,
+          email: form.email,
+          phone: form.phone,
+          program: "",
+          message: "",
+          parent_name: form.parent_name,
+          child_name: form.child_name,
+          child_age: form.child_age,
+          current_level: form.current_level,
+          tutor_gender: form.tutor_gender,
+          country: form.country,
+          class_time: form.class_time,
+        },
+      });
       setDone(true);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : lang === "ar" ? "حدث خطأ" : "Something went wrong");
@@ -113,7 +185,7 @@ function EnrollPage() {
   }
 
   return (
-    <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
+    <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-8 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
           {t.badge}
@@ -127,44 +199,127 @@ function EnrollPage() {
         className="rounded-3xl border border-border bg-surface/40 p-6 shadow-xl sm:p-8"
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="en-name">{t.name} *</Label>
-            <Input id="en-name" value={form.name} onChange={(e) => set("name", e.target.value)} placeholder={t.namePh} required />
-          </div>
           <div className="space-y-1.5">
-            <Label htmlFor="en-email">{t.email}</Label>
-            <Input id="en-email" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="en-phone">{t.phone}</Label>
-            <Input id="en-phone" value={form.phone} onChange={(e) => set("phone", e.target.value)} />
-          </div>
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="en-program">{t.program}</Label>
-            <select
-              id="en-program"
-              value={form.program}
-              onChange={(e) => set("program", e.target.value)}
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            >
-              <option value="">{t.programPh}</option>
-              {PROGRAMS.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="en-message">{t.message}</Label>
-            <textarea
-              id="en-message"
-              value={form.message}
-              onChange={(e) => set("message", e.target.value)}
-              placeholder={t.messagePh}
-              rows={4}
-              className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            <Label htmlFor="en-parent-name">{t.parentName} *</Label>
+            <Input
+              id="en-parent-name"
+              value={form.parent_name}
+              onChange={(e) => set("parent_name", e.target.value)}
+              placeholder={t.parentNamePh}
+              required
             />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="en-child-name">{t.childName} *</Label>
+            <Input
+              id="en-child-name"
+              value={form.child_name}
+              onChange={(e) => set("child_name", e.target.value)}
+              placeholder={t.childNamePh}
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>{t.childAge} *</Label>
+            <Select value={form.child_age} onValueChange={(v) => set("child_age", v)}>
+              <SelectTrigger>
+                <SelectValue placeholder={t.childAgePh} />
+              </SelectTrigger>
+              <SelectContent>
+                {CHILD_AGES.map((a) => (
+                  <SelectItem key={a} value={a}>
+                    {a}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label>{t.currentLevel} *</Label>
+            <Select value={form.current_level} onValueChange={(v) => set("current_level", v)}>
+              <SelectTrigger>
+                <SelectValue placeholder={t.currentLevelPh} />
+              </SelectTrigger>
+              <SelectContent>
+                {LEVELS.map((l) => (
+                  <SelectItem key={l} value={l}>
+                    {l}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>{t.tutorGender} *</Label>
+            <Select value={form.tutor_gender} onValueChange={(v) => set("tutor_gender", v)}>
+              <SelectTrigger>
+                <SelectValue placeholder={t.noPreference} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="No preference">{t.noPreference}</SelectItem>
+                <SelectItem value="Male">{t.male}</SelectItem>
+                <SelectItem value="Female">{t.female}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label>{t.country} *</Label>
+            <Select value={form.country} onValueChange={(v) => set("country", v)}>
+              <SelectTrigger>
+                <SelectValue placeholder={t.countryPh} />
+              </SelectTrigger>
+              <SelectContent>
+                {COUNTRIES.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="en-email">{t.email} *</Label>
+            <Input
+              id="en-email"
+              type="email"
+              value={form.email}
+              onChange={(e) => set("email", e.target.value)}
+              placeholder={t.emailPh}
+              required
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="en-phone">{t.phone} *</Label>
+            <Input
+              id="en-phone"
+              value={form.phone}
+              onChange={(e) => set("phone", e.target.value)}
+              placeholder={t.phonePh}
+              required
+            />
+          </div>
+
+          <div className="space-y-2 sm:col-span-2">
+            <Label>{t.classTime} *</Label>
+            <div className="flex flex-wrap gap-4">
+              {CLASS_TIMES.map((time) => (
+                <label key={time} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="radio"
+                    name="class_time"
+                    value={time}
+                    checked={form.class_time === time}
+                    onChange={(e) => set("class_time", e.target.value)}
+                    required
+                    className="h-4 w-4 accent-primary"
+                  />
+                  {time}
+                </label>
+              ))}
+            </div>
           </div>
         </div>
         <Button type="submit" className="mt-6 w-full" disabled={busy}>

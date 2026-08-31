@@ -7,19 +7,22 @@ import img4 from "@/assets/qumra/4.jpg.asset.json";
 import imgF from "@/assets/qumra/f2.jpg.asset.json";
 import { ArrowRight } from "lucide-react";
 
+const PROGRAM_ANCHORS = ["quran", "islamic", "arabic", "kids"] as const;
+
 export function ProgramCards({ programs }: { programs?: SiteProgram[] }) {
   const { t, lang } = useLang();
   const cards = programs
-    ? programs.map((p) => ({
+    ? programs.map((p, i) => ({
         img: p.image_url,
         name: lang === "ar" ? p.name_ar : p.name_en,
         desc: lang === "ar" ? p.desc_ar : p.desc_en,
+        anchor: PROGRAM_ANCHORS[i % PROGRAM_ANCHORS.length],
       }))
     : [
-        { img: img2.url, name: t.programs.intermediate, desc: t.programs.quran.desc },
-        { img: img3.url, name: t.programs.hifz, desc: t.programs.quran.desc },
-        { img: img4.url, name: t.programs.ijazah, desc: t.programs.islamic.desc },
-        { img: imgF.url, name: t.programs.kids.name, desc: t.programs.kids.desc },
+        { img: img2.url, name: t.programs.intermediate, desc: t.programs.quran.desc, anchor: "quran" },
+        { img: img3.url, name: t.programs.hifz, desc: t.programs.quran.desc, anchor: "quran" },
+        { img: img4.url, name: t.programs.ijazah, desc: t.programs.islamic.desc, anchor: "islamic" },
+        { img: imgF.url, name: t.programs.kids.name, desc: t.programs.kids.desc, anchor: "kids" },
       ];
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -27,6 +30,7 @@ export function ProgramCards({ programs }: { programs?: SiteProgram[] }) {
         <Link
           key={c.name}
           to="/courses"
+          hash={c.anchor}
           className="group relative overflow-hidden rounded-2xl border border-border bg-surface/50 transition hover:border-primary/60 hover:-translate-y-1"
         >
           <div className="aspect-square overflow-hidden">
