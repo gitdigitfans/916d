@@ -40,6 +40,34 @@ const COUNTRIES = [
 ];
 const CLASS_TIMES = ["Morning", "Afternoon", "Evening", "Flexible"];
 
+const PHONE_CODES = [
+  { code: "+1", label: "+1 (US/Canada)" },
+  { code: "+44", label: "+44 (UK)" },
+  { code: "+20", label: "+20 (Egypt)" },
+  { code: "+966", label: "+966 (Saudi Arabia)" },
+  { code: "+971", label: "+971 (UAE)" },
+  { code: "+965", label: "+965 (Kuwait)" },
+  { code: "+974", label: "+974 (Qatar)" },
+  { code: "+973", label: "+973 (Bahrain)" },
+  { code: "+968", label: "+968 (Oman)" },
+  { code: "+962", label: "+962 (Jordan)" },
+  { code: "+961", label: "+961 (Lebanon)" },
+  { code: "+212", label: "+212 (Morocco)" },
+  { code: "+213", label: "+213 (Algeria)" },
+  { code: "+216", label: "+216 (Tunisia)" },
+  { code: "+218", label: "+218 (Libya)" },
+  { code: "+249", label: "+249 (Sudan)" },
+  { code: "+964", label: "+964 (Iraq)" },
+  { code: "+90", label: "+90 (Turkey)" },
+  { code: "+92", label: "+92 (Pakistan)" },
+  { code: "+91", label: "+91 (India)" },
+  { code: "+60", label: "+60 (Malaysia)" },
+  { code: "+62", label: "+62 (Indonesia)" },
+  { code: "+61", label: "+61 (Australia)" },
+  { code: "+49", label: "+49 (Germany)" },
+  { code: "+33", label: "+33 (France)" },
+];
+
 function EnrollPage() {
   const { lang } = useLang();
   const t = {
@@ -62,7 +90,9 @@ function EnrollPage() {
       email: "Email Address",
       emailPh: "you@email.com",
       phone: "Whatsapp Number",
-      phonePh: "+1 000 000 0000",
+      phonePh: "000 000 0000",
+      phoneCode: "Code",
+      phoneCodePh: "Code",
       classTime: "Preferred Class Time",
       submit: "Start Free Trial",
       sending: "Sending…",
@@ -93,7 +123,9 @@ function EnrollPage() {
       email: "البريد الإلكتروني",
       emailPh: "you@email.com",
       phone: "رقم الواتساب",
-      phonePh: "+1 000 000 0000",
+      phonePh: "000 000 0000",
+      phoneCode: "الكود",
+      phoneCodePh: "الكود",
       classTime: "الوقت المفضل للحصة",
       submit: "ابدأ الحصة التجريبية",
       sending: "جارٍ الإرسال…",
@@ -115,6 +147,7 @@ function EnrollPage() {
     tutor_gender: "",
     country: "",
     email: "",
+    phone_code: "",
     phone: "",
     class_time: "",
   });
@@ -135,13 +168,17 @@ function EnrollPage() {
       toast.error(lang === "ar" ? "اسم الطفل مطلوب" : "Child name is required");
       return;
     }
+    if (!form.phone_code) {
+      toast.error(lang === "ar" ? "كود الدولة مطلوب" : "Country code is required");
+      return;
+    }
     setBusy(true);
     try {
       await createBookingFn({
         data: {
           name: form.parent_name,
           email: form.email,
-          phone: form.phone,
+          phone: `${form.phone_code} ${form.phone}`.trim(),
           program: "",
           message: "",
           parent_name: form.parent_name,
@@ -293,13 +330,27 @@ function EnrollPage() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="en-phone">{t.phone} *</Label>
-            <Input
-              id="en-phone"
-              value={form.phone}
-              onChange={(e) => set("phone", e.target.value)}
-              placeholder={t.phonePh}
-              required
-            />
+            <div className="flex gap-2">
+              <Select value={form.phone_code} onValueChange={(v) => set("phone_code", v)}>
+                <SelectTrigger className="w-28 shrink-0">
+                  <SelectValue placeholder={t.phoneCodePh} />
+                </SelectTrigger>
+                <SelectContent>
+                  {PHONE_CODES.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>
+                      {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                id="en-phone"
+                value={form.phone}
+                onChange={(e) => set("phone", e.target.value)}
+                placeholder={t.phonePh}
+                required
+              />
+            </div>
           </div>
 
           <div className="space-y-2 sm:col-span-2">
