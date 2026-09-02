@@ -84,7 +84,7 @@ function EnrollPage() {
       currentLevel: "Current Level",
       currentLevelPh: "Select level",
       tutorGender: "Preferred Tutor Gender",
-      tutorGenderPh: "No preference",
+      tutorGenderPh: "Select gender",
       country: "Your Country",
       countryPh: "Select Country Name",
       email: "Email Address",
@@ -100,7 +100,6 @@ function EnrollPage() {
       successDesc: "We'll contact you shortly. You can also message us directly on WhatsApp.",
       whatsapp: "Message us on WhatsApp",
       back: "Back to home",
-      noPreference: "No preference",
       male: "Male",
       female: "Female",
     },
@@ -117,7 +116,7 @@ function EnrollPage() {
       currentLevel: "المستوى الحالي",
       currentLevelPh: "اختر المستوى",
       tutorGender: "جنس المعلم المفضل",
-      tutorGenderPh: "لا تفضيل",
+      tutorGenderPh: "اختر الجنس",
       country: "دولتك",
       countryPh: "اختر اسم الدولة",
       email: "البريد الإلكتروني",
@@ -133,7 +132,6 @@ function EnrollPage() {
       successDesc: "سنتواصل معك قريبًا. يمكنك أيضًا مراسلتنا مباشرة على الواتساب.",
       whatsapp: "راسلنا على واتساب",
       back: "العودة للرئيسية",
-      noPreference: "لا تفضيل",
       male: "ذكر",
       female: "أنثى",
     },
@@ -292,10 +290,9 @@ function EnrollPage() {
             <Label>{t.tutorGender} *</Label>
             <Select value={form.tutor_gender} onValueChange={(v) => set("tutor_gender", v)}>
               <SelectTrigger>
-                <SelectValue placeholder={t.noPreference} />
+                <SelectValue placeholder={t.tutorGenderPh} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="No preference">{t.noPreference}</SelectItem>
                 <SelectItem value="Male">{t.male}</SelectItem>
                 <SelectItem value="Female">{t.female}</SelectItem>
               </SelectContent>
