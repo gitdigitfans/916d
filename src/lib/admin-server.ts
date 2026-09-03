@@ -3,6 +3,39 @@ import { deleteCookie, getCookie, setCookie } from "@tanstack/react-start/server
 import { z } from "zod";
 import { supabase } from "./supabase-server";
 
+const sendBookingNotificationEmail = createServerOnlyFn(async (fields: Record<string, string>) => {
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || "465");
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const to = process.env.NOTIFY_TO || user;
+  if (!host || !user || !pass) return;
+
+  try {
+    const nodemailer = await import("nodemailer");
+    const transporter = nodemailer.default.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: { user, pass },
+    });
+
+    const lines = Object.entries(fields)
+      .filter(([, v]) => v)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join("\n");
+
+    await transporter.sendMail({
+      from: user,
+      to,
+      subject: "New Enrollment Request — Qumra Academy",
+      text: lines,
+    });
+  } catch (err) {
+    console.error("Failed to send booking notification email:", err);
+  }
+});
+
 export interface Student {
   id: string;
   name: string;
@@ -446,6 +479,19 @@ export const createBookingFn = createServerFn({ method: "POST" })
         class_time: data.class_time || null,
       });
     if (error) throw new Error(error.message);
+
+    await sendBookingNotificationEmail({
+      "Parent Name": data.parent_name || data.name,
+      "Child Name": data.child_name,
+      "Child Age": data.child_age,
+      "Current Level": data.current_level,
+      "Preferred Tutor Gender": data.tutor_gender,
+      "Country": data.country,
+      "Email": data.email,
+      "Phone": data.phone,
+      "Preferred Class Time": data.class_time,
+    });
+
     return true;
   });
 
