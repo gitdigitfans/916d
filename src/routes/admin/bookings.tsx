@@ -42,7 +42,7 @@ function BookingsPage() {
   }
 
   async function remove(b: Booking) {
-    if (!window.confirm(`Delete booking from "${b.name}"?`)) return;
+    if (!window.confirm(`Delete booking from "${b.parent_name || b.name}"?`)) return;
     try {
       await deleteBookingFn({ data: { id: b.id } });
       toast.success("Booking deleted");
@@ -73,10 +73,10 @@ function BookingsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
+                  <TableHead>Parent</TableHead>
                   <TableHead>Contact</TableHead>
-                  <TableHead>Program</TableHead>
-                  <TableHead>Message</TableHead>
+                  <TableHead>Child</TableHead>
+                  <TableHead>Preferences</TableHead>
                   <TableHead>Received</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -85,14 +85,20 @@ function BookingsPage() {
               <TableBody>
                 {bookings.map((b) => (
                   <TableRow key={b.id}>
-                    <TableCell className="font-medium">{b.name}</TableCell>
+                    <TableCell className="font-medium">{b.parent_name || b.name}</TableCell>
                     <TableCell>
                       <div className="text-xs text-muted-foreground">{b.email || "—"}</div>
                       <div className="text-xs text-muted-foreground">{b.phone || "—"}</div>
+                      <div className="text-xs text-muted-foreground">{b.country || "—"}</div>
                     </TableCell>
-                    <TableCell>{b.program || "—"}</TableCell>
+                    <TableCell>
+                      <div className="text-xs font-medium">{b.child_name || "—"}</div>
+                      <div className="text-xs text-muted-foreground">Age: {b.child_age || "—"}</div>
+                      <div className="text-xs text-muted-foreground">Level: {b.current_level || "—"}</div>
+                    </TableCell>
                     <TableCell className="max-w-[220px]">
-                      <p className="line-clamp-2 text-xs text-muted-foreground">{b.message || "—"}</p>
+                      <p className="text-xs text-muted-foreground">Tutor: {b.tutor_gender || "—"}</p>
+                      <p className="text-xs text-muted-foreground">Class time: {b.class_time || "—"}</p>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       {new Date(b.created_at).toLocaleString()}
