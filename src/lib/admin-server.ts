@@ -9,9 +9,22 @@ const sendBookingNotificationEmail = createServerOnlyFn(async (fields: Record<st
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
   const to = process.env.NOTIFY_TO || user;
-  if (!host || !user || !pass) return;
+
+  console.log("[booking-email] SMTP config check:", {
+    hasHost: !!host,
+    hasUser: !!user,
+    hasPass: !!pass,
+    port,
+    to,
+  });
+
+  if (!host || !user || !pass) {
+    console.log("[booking-email] Skipping: missing SMTP_HOST, SMTP_USER, or SMTP_PASS env vars");
+    return;
+  }
 
   try {
+    console.log("[booking-email] Connecting to SMTP and sending...");
     const nodemailer = await import("nodemailer");
     const transporter = nodemailer.default.createTransport({
       host,
@@ -25,14 +38,15 @@ const sendBookingNotificationEmail = createServerOnlyFn(async (fields: Record<st
       .map(([k, v]) => `${k}: ${v}`)
       .join("\n");
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: user,
       to,
       subject: "New Enrollment Request — Qumra Academy",
       text: lines,
     });
+    console.log("[booking-email] Sent successfully:", info.messageId);
   } catch (err) {
-    console.error("Failed to send booking notification email:", err);
+    console.log("[booking-email] FAILED:", err instanceof Error ? err.message : String(err));
   }
 });
 
