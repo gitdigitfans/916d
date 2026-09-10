@@ -7,7 +7,34 @@ declare global {
     paypal?: {
       Buttons: (opts: Record<string, unknown>) => { render: (el: HTMLElement) => void };
     };
-  };
+  }
+}
+
+let paypalScriptPromise: Promise<void> | null = null;
+
+function loadPaypalScript(clientId: string): Promise<void> {
+  if (window.paypal) return Promise.resolve();
+  if (paypalScriptPromise) return paypalScriptPromise;
+
+  paypalScriptPromise = new Promise<void>((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>(`script[src*="paypal.com/sdk/js"]`);
+    if (existing) {
+      existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", () => reject(new Error("Failed to load PayPal SDK script")));
+      return;
+    }
+    const s = document.createElement("script");
+    s.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
+    s.async = true;
+    s.onload = () => resolve();
+    s.onerror = () => {
+      paypalScriptPromise = null;
+      reject(new Error("Failed to load PayPal SDK script"));
+    };
+    document.head.appendChild(s);
+  });
+
+  return paypalScriptPromise;
 }
 
 interface PayPalButtonProps {
@@ -38,16 +65,7 @@ export function PayPalButton({ amount, planName, onSuccess, className }: PayPalB
           return;
         }
 
-        if (!document.querySelector(`script[src*="paypal"]`)) {
-          await new Promise<void>((resolve, reject) => {
-            const s = document.createElement("script");
-            s.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
-            s.async = true;
-            s.onload = () => resolve();
-            s.onerror = () => reject(new Error("Failed to load PayPal SDK script"));
-            document.head.appendChild(s);
-          });
-        }
+        await loadPaypalScript(clientId);
 
         if (cancelled) return;
 
